@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # 1. PHP Backend (พร้อมไดรเวอร์ MSSQL)
+  php:
+    build:
+      context: ./docker/php  # ชี้ไปที่โฟลเดอร์ที่มี Dockerfile
+    container_name: my-php-backend
+    volumes:
+      - ./backend:/var/www/html
+    networks:
+      - app-network
+
+  # 2. Nginx (Web Server)
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: my-web-server
+    ports:
+      - "8080:80"  # เข้า Backend API ผ่าน http://localhost:8080
+    volumes:
+      - ./backend:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - app-network
+
+  # 3. Vue.js Frontend (Dev Server)
+  frontend:
+    image: node:20-alpine
+    container_name: my-vue-frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "5173:5173"  # เข้า Frontend ผ่าน http://localhost:5173 (พอร์ตมาตรฐานของ Vite)
+    # รัน npm install และ npm run dev (ต้องมี --host เพื่อให้เข้าถึงจากภายนอก container ได้)
+    command: sh -c "npm install && npm run dev -- --host"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
