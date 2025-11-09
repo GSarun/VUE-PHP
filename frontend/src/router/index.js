@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Login from '../components/Login.vue';
-import DataFetcher from '../components/DataFetcher.vue';
+import Home from '../components/Home.vue';
 import { useAuthStore } from '../stores/auth';
 
 const routes = [
@@ -12,7 +12,7 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: DataFetcher, // กำหนดให้หน้าแรก (/) เป็นหน้า Home ที่แสดงข้อมูล
+    component: Home, // กำหนดให้หน้าแรก (/) เป็นหน้า Home ที่แสดงข้อมูล
     meta: { requiresAuth: true } // ระบุว่าหน้านี้ต้อง Login
   },
 ];
