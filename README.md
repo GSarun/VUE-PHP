@@ -30,7 +30,7 @@
 │   └── api/
 │       ├── login.php
 │       └── test.php
-└── frontend/        # โค้dฝั่ง Vue.js (Client)
+└── frontend/        # โค้ดฝั่ง Vue.js (Client)
     ├── src/
     │   ├── components/
     │   ├── router/
@@ -70,8 +70,31 @@
     ```
 4.  เปิดเบราว์เซอร์และเข้าไปที่ URL ที่แสดงใน Terminal (โดยปกติคือ `http://localhost:5173`)
 
+### 3. รันโปรเจกต์ด้วย Docker Compose (แนะนำ)
+
+สำหรับผู้ที่ต้องการรันโปรเจกต์ในสภาพแวดล้อมที่แยกออกจากระบบหลัก และจัดการได้ง่ายขึ้น สามารถใช้ Docker Compose ได้
+
+1.  **ติดตั้ง Docker:** ตรวจสอบให้แน่ใจว่าคุณได้ติดตั้ง Docker Desktop (สำหรับ Windows/macOS) หรือ Docker Engine (สำหรับ Linux) แล้ว
+2.  **รันโปรเจกต์:**
+    เปิด Terminal ที่ Root Directory ของโปรเจกต์ (`VUE-PHP/`) และรันคำสั่ง:
+    ```bash
+    docker compose up --build
+    ```
+    *   คำสั่งนี้จะทำการสร้าง Docker Image (ถ้ายังไม่มีหรือมีการเปลี่ยนแปลง) และรัน Container ทั้งหมดที่กำหนดไว้ใน `docker-compose.yml`
+    *   **Frontend:** จะสามารถเข้าถึงได้ที่ `http://localhost:5173`
+    *   **Backend API:** จะสามารถเข้าถึงได้ที่ `http://localhost:8080`
+    *   หากคุณต้องการรันในโหมดเบื้องหลัง (detached mode) ให้เพิ่ม `-d` ต่อท้ายคำสั่ง: `docker compose up -d --build`
+3.  **หยุดโปรเจกต์:**
+    เมื่อต้องการหยุดการทำงานของ Container ทั้งหมด ให้กด `Ctrl+C` ใน Terminal ที่รัน `docker compose up` หรือเปิด Terminal ใหม่ที่ Root Directory ของโปรเจกต์ และรันคำสั่ง:
+    ```bash
+    docker compose down
+    ```
+    หากต้องการลบ Volume ที่สร้างขึ้นมาด้วย (เช่น สำหรับฐานข้อมูล) ให้ใช้ `docker compose down -v`
+
 ### การทดสอบ
 
 - เมื่อเข้าสู่หน้าเว็บครั้งแรก คุณจะถูก redirect ไปยังหน้า `/login`
-- **Username** และ **Password** สามารถใช้ค่าใดก็ได้ เนื่องจาก `login.php` (ไม่ได้อยู่ใน context) ถูกสมมติว่าตรวจสอบและคืนค่า user object เสมอเมื่อสำเร็จ
+- **Username** และ **Password** ที่ใช้สำหรับทดสอบถูกกำหนดไว้ในไฟล์ `backend/api/login.php`:
+  - **Username:** `admin`
+  - **Password:** `password123`
 - หลังจาก Login สำเร็จ คุณจะถูกพาไปยังหน้า Home ซึ่งจะแสดงข้อมูลที่ดึงมาจาก `api/test.php`
